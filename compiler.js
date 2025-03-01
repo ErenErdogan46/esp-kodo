@@ -79,18 +79,17 @@ function runEsperantoCode() {
 
 function highlightEsperantoCode() {
     const editor = document.getElementById("editor");
-    let code = editor.innerText;
-    let words = code.split(/\s+/);
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
 
-    let highlightedHTML = words.map(word => {
-        if (keywords[word]) {  
-            return `<span class="keyword">${word}</span>`;
-        } else if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(word)) {  
-            return word;
-        } else {  
-            return `<span class="error">${word}</span>`;
-        }
-    }).join(" ");
+    let code = editor.innerText;
+    let highlightedHTML = code.replace(/\b(estas|plus|montru|dum|se)\b/g, '<span class="keyword">$1</span>');
 
     editor.innerHTML = highlightedHTML;
+
+    // İmlecin yanlış yere gitmesini önlemek için:
+    range.setStart(editor.childNodes[editor.childNodes.length - 1], 1);
+    range.setEnd(editor.childNodes[editor.childNodes.length - 1], 1);
+    selection.removeAllRanges();
+    selection.addRange(range);
 }
